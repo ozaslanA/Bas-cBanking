@@ -34,7 +34,7 @@ public class AccountService {
     }
 
     public AccountResponse getAccountById(Long id){
-        Account account=accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account not found with id: " + id));
+        Account account=accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Bu : "  + id  + " ye ait kullanıcı bulunamadı"));
         return new AccountResponse(account.getId(), account.getAccountNumber(), account.getBalance());
 
     }
@@ -53,7 +53,7 @@ public class AccountService {
             account = accountRepository.save(account);
             return new AccountResponse(account.getId(), account.getAccountNumber(), account.getBalance());
         } else {
-            throw new RuntimeException("Customer not found with id: " + request.getCustomerId());
+            throw new RuntimeException("Customer id ye ait kullanıcı bulunamadı: " + request.getCustomerId());
         }
     }
     public void deleteAccount(Long accountId) {
@@ -61,7 +61,7 @@ public class AccountService {
         if (optionalAccount.isPresent()) {
             accountRepository.deleteById(accountId);
         } else {
-            throw new RuntimeException("Account not found with id: " + accountId);
+            throw new RuntimeException("Bu : " + accountId +" ye ait hesap bulunamadı");
         }
     }
     public AccountResponse updateAccount(Long accountId, CreateAccountRequest request) {
@@ -75,7 +75,8 @@ public class AccountService {
 
             return new AccountResponse(account.getId(), account.getAccountNumber(), account.getBalance());
         } else {
-            throw new RuntimeException("Account not found with id: " + accountId);
+            throw new RuntimeException("Bu : " + accountId +" ye ait hesap bulunamadı");
+
         }
     }
 

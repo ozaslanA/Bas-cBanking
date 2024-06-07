@@ -29,7 +29,7 @@ public class CustomerService {
 
     public CustomerResponse getCustomerById(Long id) {
         Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Customer not found with id: " + id));
+                .orElseThrow(() -> new RuntimeException("Bu id ye ait customer bulunamadı: " + id));
         return new CustomerResponse(customer.getId(), customer.getName(), customer.getEmail());
     }
 
@@ -46,7 +46,7 @@ public class CustomerService {
 
     public CustomerResponse updateCustomer(Long id, UpdateCustomerRequest request) {
         Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Customer not found with id: " + id));
+                .orElseThrow(() -> new RuntimeException("Bu id ye ait customer bulunamadı: " + id));
         customer.setName(request.getName());
         customer.setEmail(request.getEmail());
         Customer updatedCustomer = customerRepository.save(customer);
@@ -55,7 +55,7 @@ public class CustomerService {
 
     public void deleteCustomer(Long id) {
         Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Customer not found with id: " + id));
+                .orElseThrow(() -> new RuntimeException("Bu id ye ait customer bulunamadı: " + id));
         customerRepository.delete(customer);
     }
 }
