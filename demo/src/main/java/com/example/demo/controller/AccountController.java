@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dtos.request.CreateAccountRequest;
 import com.example.demo.dtos.responses.AccountResponse;
 import com.example.demo.service.AccountService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,20 +29,20 @@ public class AccountController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AccountResponse> getCustomerById(@PathVariable Long id) {
+    public ResponseEntity<AccountResponse> getCustomerById(  @PathVariable Long id) {
         AccountResponse customer = accountService.getAccountById(id);
         return ResponseEntity.ok(customer);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<AccountResponse> createAccount(@RequestBody CreateAccountRequest request) {
+    public ResponseEntity<AccountResponse> createAccount(@Valid @RequestBody CreateAccountRequest request) {
         AccountResponse createdAccount = accountService.createAccount(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdAccount);
     }
 
     @PutMapping("/update/{accountId}")
     public ResponseEntity<AccountResponse> updateAccount(
-            @PathVariable Long accountId,
+          @Valid  @PathVariable Long accountId,
             @RequestBody CreateAccountRequest request) {
         AccountResponse updatedAccount = accountService.updateAccount(accountId, request);
         return ResponseEntity.ok(updatedAccount);

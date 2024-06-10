@@ -1,14 +1,15 @@
 package com.example.demo.service;
 
 import com.example.demo.dtos.request.CreateAccountRequest;
-import com.example.demo.dtos.request.UpdateAccountRequest;
 import com.example.demo.dtos.responses.AccountResponse;
+import com.example.demo.exceptions.BankException;
 import com.example.demo.model.Account;
 import com.example.demo.model.Customer;
 import com.example.demo.repository.AccountRepository;
 import com.example.demo.repository.CustomerRepository;
 import org.hibernate.sql.Update;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,13 +35,14 @@ public class AccountService {
     }
 
     public AccountResponse getAccountById(Long id){
-        Account account=accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Bu : "  + id  + " ye ait kullanıcı bulunamadı"));
+        Account account=accountRepository.findById(id).orElseThrow(() -> new BankException(id+" " + " Numaralı Id'Ye Ait Hesap Bulunamadı", HttpStatus.NOT_FOUND));
         return new AccountResponse(account.getId(), account.getAccountNumber(), account.getBalance());
 
     }
+
     public AccountResponse createAccount(CreateAccountRequest request) {
         if (accountRepository.existsByAccountNumber(request.getAccountNumber())) {
-            throw new RuntimeException("Bu Account number zaten kullanımda " + request.getAccountNumber());
+            throw new BankException( request.getAccountNumber()+ " " + "Numaralı Hesap Zaten Kullanımda ",HttpStatus.CONFLICT);
         }
         Optional<Customer> optionalCustomer = customerRepository.findById(request.getCustomerId());
         if (optionalCustomer.isPresent()) {
@@ -53,17 +55,21 @@ public class AccountService {
             account = accountRepository.save(account);
             return new AccountResponse(account.getId(), account.getAccountNumber(), account.getBalance());
         } else {
-            throw new RuntimeException("Customer id ye ait kullanıcı bulunamadı: " + request.getCustomerId());
+            throw new BankException( request.getCustomerId() +" "+  "Müşteri Numaralı Kullanıcı Bulunamadı: " ,HttpStatus.NOT_FOUND);
         }
     }
+
+
     public void deleteAccount(Long accountId) {
         Optional<Account> optionalAccount = accountRepository.findById(accountId);
         if (optionalAccount.isPresent()) {
             accountRepository.deleteById(accountId);
         } else {
-            throw new RuntimeException("Bu : " + accountId +" ye ait hesap bulunamadı");
+            throw new BankException("Bu : " + " "+  accountId + " " + " Ye Ait Hesap Bulunamadı",HttpStatus.NOT_FOUND);
         }
     }
+
+
     public AccountResponse updateAccount(Long accountId, CreateAccountRequest request) {
         Optional<Account> optionalAccount = accountRepository.findById(accountId);
         if (optionalAccount.isPresent()) {
@@ -75,9 +81,11 @@ public class AccountService {
 
             return new AccountResponse(account.getId(), account.getAccountNumber(), account.getBalance());
         } else {
-            throw new RuntimeException("Bu : " + accountId +" ye ait hesap bulunamadı");
+            throw new BankException("Bu : " + " "+  accountId + " " + " Ye Ait Hesap Bulunamadı",HttpStatus.NOT_FOUND);
 
         }
     }
+
+
 
 }
