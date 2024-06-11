@@ -3,8 +3,10 @@ package com.example.demo.service;
 import com.example.demo.dtos.CustomerWithAccountsDTO;
 import com.example.demo.dtos.request.CreateCustomerRequest;
 import com.example.demo.dtos.request.UpdateCustomerRequest;
+import com.example.demo.dtos.responses.CustomerAccountResponse;
 import com.example.demo.dtos.responses.CustomerResponse;
 import com.example.demo.exceptions.BankException;
+import com.example.demo.model.Account;
 import com.example.demo.model.Customer;
 import com.example.demo.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,6 +109,7 @@ public List<Customer> getByOrderByAccountNumberAsc(){
     }
 
 
+
     public CustomerResponse getCustomerById(Long id) {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Bu id ye ait customer bulunamadı: " + id));
@@ -145,5 +148,22 @@ public List<Customer> getByOrderByAccountNumberAsc(){
     }
 
 
+    public List<CustomerAccountResponse> getAccountsMaxBalancePerCustomer() {
+        List<Account> accounts = customerRepository.findAccountsMaxBalancePerCustomer();
+
+        if (accounts.isEmpty() || accounts == null) {
+            throw new BankException("İlgili Hesaplar Bulunamadı.",HttpStatus.NOT_FOUND);
+        }
+
+        return accounts.stream()
+                .map(account -> new CustomerAccountResponse(
+                        account.getId(),
+                        account.getAccountNumber(),
+                        account.getBalance(),
+                        account.getCustomer().getId(),
+                        account.getCustomer().getName(),
+                        account.getCustomer().getEmail()))
+                .collect(Collectors.toList());
+    }
 
 }

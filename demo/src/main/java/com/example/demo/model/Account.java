@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 @Table(name = "ACCOUNTS")
@@ -35,5 +36,8 @@ public class Account implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
     private Customer customer;
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    private Set<AccountTransaction> transactions;
 
 }

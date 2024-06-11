@@ -19,8 +19,17 @@ public interface CustomerRepository extends JpaRepository<Customer,Long > {
 
     @Query("SELECT c FROM Customer c JOIN c.accounts a ORDER BY a.accountNumber ASC")
     List<Customer> findCustomersOrderByAccountNumberAsc();
+
     @Query("SELECT c FROM Customer c JOIN c.accounts a ORDER BY a.accountNumber DESC")
     List<Customer> findCustomersOrderByAccountNumberDesc();
+
+//Her bir hesaba ait en yüksek balance değerini çeken jpql querysi
+    @Query("SELECT DISTINCT a FROM Account a " +
+            "WHERE a.balance = (" +
+            "    SELECT MAX(a2.balance) FROM Account a2 WHERE a2.customer = a.customer" +
+            ")")
+    List<Account> findAccountsMaxBalancePerCustomer();
+
     List<Customer> findByOrderByNameAsc();
     List<Customer> findByOrderByNameDesc();
 

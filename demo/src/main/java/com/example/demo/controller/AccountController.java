@@ -1,5 +1,4 @@
 package com.example.demo.controller;
-
 import com.example.demo.dtos.request.CreateAccountRequest;
 import com.example.demo.dtos.responses.AccountResponse;
 import com.example.demo.service.AccountService;
@@ -28,17 +27,20 @@ public class AccountController {
         return ResponseEntity.ok(accounts);
     }
 
+
     @GetMapping("/{id}")
     public ResponseEntity<AccountResponse> getCustomerById(  @PathVariable Long id) {
         AccountResponse customer = accountService.getAccountById(id);
         return ResponseEntity.ok(customer);
     }
 
+
     @PostMapping("/create")
     public ResponseEntity<AccountResponse> createAccount(@Valid @RequestBody CreateAccountRequest request) {
         AccountResponse createdAccount = accountService.createAccount(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdAccount);
     }
+
 
     @PutMapping("/update/{accountId}")
     public ResponseEntity<AccountResponse> updateAccount(
@@ -48,9 +50,10 @@ public class AccountController {
         return ResponseEntity.ok(updatedAccount);
     }
 
+
     @DeleteMapping("/delete/{accountId}")
     public ResponseEntity<String> deleteAccount(@PathVariable Long accountId) {
         accountService.deleteAccount(accountId);
-        return ResponseEntity.ok("Account deleted successfully");
+        return ResponseEntity.ok("Hesap Başarıyla Silindi.");
     }
 }
